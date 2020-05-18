@@ -11,8 +11,6 @@ import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 
-// hello! this comment exists to test commits
-
 public class Environment extends Application {
 
   // Constants
