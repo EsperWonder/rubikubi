@@ -1,41 +1,89 @@
 package javafx;
 
 import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Node;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.shape.Box;
+import javafx.scene.SceneAntialiasing;
+import javafx.scene.SubScene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
-import rubik.Face;
+import logic.RubikCube;
 
 public class Environment extends Application {
 
+  ///////////////
+  // CONSTANTS //
+  ///////////////
+
   /** Window width. */
-  private static final int WIDTH = 600;
+  private static final int WIDTH = 800;
   /** Window height. */
   private static final int HEIGHT = 600;
 
-  // Scene Objects
+  static final Insets insets = new Insets(8);
+
+  private static final Background BG_2D =
+      new Background(new BackgroundFill(Color.ANTIQUEWHITE, null, null));
+
+  /////////////
+  // OBJECTS //
+  /////////////
+
+  // Logic Objects
+  static RubikCube rubikCube = new RubikCube();
+
+  // 2D Scene Objects
   static Scene scene;
-  static Box rubik = new Box(200, 200, 200);
+  static Button btn_f = new Button("F");
 
-  static Rotate rx = new Rotate(0, Rotate.X_AXIS);
-  static Rotate ry = new Rotate(0, Rotate.Y_AXIS);
-  
-  static PerspectiveCamera camera = new PerspectiveCamera(false);
+  // 3D Scene Objects
+  static SubScene subscene;
 
-  // Mouse Tracking
-  private static double mouseX, mouseY = 0;
+  static FXRubikCube fx_cube = new FXRubikCube(rubikCube);
 
-  public static Parent createContent() {
-    rubik.setMaterial(Face.RED.getMaterial());
-    translate(rubik, WIDTH / 2, HEIGHT / 2);
-    rubik.getTransforms().addAll(rx, ry);
+  static Rotate rx = new Rotate(0, 80, 80, 80, Rotate.X_AXIS);
+  static Rotate ry = new Rotate(0, 80, 80, 80, Rotate.Y_AXIS);
 
-    return new Group(camera, rubik);
+  static PerspectiveCamera camera = new PerspectiveCamera(true);
+
+  ///////////////
+  // Functions //
+  ///////////////
+
+  private static Parent createContent() {
+    BorderPane content = new BorderPane();
+    content.setPadding(new Insets(8));
+    content.setBackground(BG_2D);
+
+    content.setCenter(create3DContent());
+    content.setRight(new VBox(8, btn_f));
+    return content;
+  }
+
+  private static SubScene create3DContent() {
+    HBox content = new HBox();
+    content.setAlignment(Pos.CENTER);
+
+    subscene = new SubScene(content, 500, 500, true, SceneAntialiasing.BALANCED);
+
+    fx_cube.setTranslateZ(-200);
+    fx_cube.getTransforms().addAll(rx, ry);
+    fx_cube.setPickOnBounds(true);
+    
+    //TODO setCamera() to subscene, you didn't add it to it yet!
+
+    content.getChildren().addAll(fx_cube);
+    return subscene;
   }
 
   public void start(Stage stage) {
@@ -44,12 +92,14 @@ public class Environment extends Application {
     stage.setResizable(false);
 
     // Scene
-    scene = new Scene(createContent(), WIDTH, HEIGHT);
+    scene = new Scene(createContent(), WIDTH, HEIGHT, true);
     stage.setScene(scene);
 
     // Event Handling
-    handleEvents();
+    handleButtons();
+    handleMouse();
 
+    // Run
     stage.centerOnScreen();
     stage.show();
   }
@@ -58,22 +108,31 @@ public class Environment extends Application {
     launch(args);
   }
 
-  private static void handleEvents() {
-    scene.setOnMousePressed(mouse -> {
+  private static double mouseX, mouseY = 0;
+
+  private static void handleButtons() {
+    btn_f.setOnAction(event -> {
+      rubikCube.F();
+      fx_cube.update();
+    });
+  }
+
+  private static void handleMouse() {
+    subscene.setOnMousePressed(mouse -> {
       // Get mouse position
       mouseX = mouse.getSceneX();
       mouseY = mouse.getSceneY();
     });
 
-    scene.setOnMouseDragged(mouse -> {
+    subscene.setOnMouseDragged(mouse -> {
       // Distance offsets from old to current position
-      double dx = (mouseX - mouse.getSceneX()) * 10;
-      double dy = (mouseY - mouse.getSceneY()) * 10;
+      double dx = (mouseX - mouse.getSceneX());
+      double dy = (mouseY - mouse.getSceneY());
 
       // Left click turns the camera if not on rubik, while right click always turns the camera
-      if (mouse.isSecondaryButtonDown() || (mouse.isPrimaryButtonDown() && !rubik.isPressed())) {
-        rx.setAngle(rx.getAngle() - (dy / rubik.getHeight() * 360) * (Math.PI / 180));
-        ry.setAngle(ry.getAngle() - (dx / rubik.getWidth() * -360) * (Math.PI / 180));
+      if (mouse.isSecondaryButtonDown()) {
+        rx.setAngle(rx.getAngle() - dy);
+        ry.setAngle(ry.getAngle() + dx);
 
         // Limits on rx
         if (rx.getAngle() > 90) {
@@ -87,10 +146,10 @@ public class Environment extends Application {
       mouseX = mouse.getSceneX();
       mouseY = mouse.getSceneY();
     });
+    
+    scene.setOnScroll(scroll -> {
+      camera.setTranslateX(camera.getTranslateX() + 1);
+    });
   }
 
-  private static void translate(Node n, double x, double y) {
-    n.setTranslateX(x);
-    n.setTranslateY(y);
-  }
 }
