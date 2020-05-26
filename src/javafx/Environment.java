@@ -45,6 +45,17 @@ public class Environment extends Application {
   // 2D Scene Objects
   static Scene scene;
   static Button btn_f = new Button("F");
+  static Button btn_fi = new Button("Fi");
+  static Button btn_b = new Button("B");
+  static Button btn_bi = new Button("Bi");
+  static Button btn_l = new Button("L");
+  static Button btn_li = new Button("Li");
+  static Button btn_r = new Button("R");
+  static Button btn_ri = new Button("Ri");
+  static Button btn_u = new Button("U");
+  static Button btn_ui = new Button("Ui");
+  static Button btn_d = new Button("D");
+  static Button btn_di = new Button("Di");
 
   // 3D Scene Objects
   static SubScene subscene;
@@ -54,7 +65,7 @@ public class Environment extends Application {
   static Rotate rx = new Rotate(0, 80, 80, 80, Rotate.X_AXIS);
   static Rotate ry = new Rotate(0, 80, 80, 80, Rotate.Y_AXIS);
 
-  static PerspectiveCamera camera = new PerspectiveCamera(true);
+  static PerspectiveCamera camera = new PerspectiveCamera(false);
 
   ///////////////
   // Functions //
@@ -65,8 +76,19 @@ public class Environment extends Application {
     content.setPadding(new Insets(8));
     content.setBackground(BG_2D);
 
+    // 3D Content
     content.setCenter(create3DContent());
-    content.setRight(new VBox(8, btn_f));
+
+    // Rotation UI
+    HBox fBox = new HBox(8, btn_f, btn_fi);
+    HBox bBox = new HBox(8, btn_b, btn_bi);
+    HBox lBox = new HBox(8, btn_l, btn_li);
+    HBox rBox = new HBox(8, btn_r, btn_ri);
+    HBox uBox = new HBox(8, btn_u, btn_ui);
+    HBox dBox = new HBox(8, btn_d, btn_di);
+
+    content.setRight(new VBox(8, fBox, bBox, lBox, rBox, uBox, dBox));
+
     return content;
   }
 
@@ -79,8 +101,8 @@ public class Environment extends Application {
     fx_cube.setTranslateZ(-200);
     fx_cube.getTransforms().addAll(rx, ry);
     fx_cube.setPickOnBounds(true);
-    
-    //TODO setCamera() to subscene, you didn't add it to it yet!
+
+    subscene.setCamera(camera);
 
     content.getChildren().addAll(fx_cube);
     return subscene;
@@ -115,6 +137,55 @@ public class Environment extends Application {
       rubikCube.F();
       fx_cube.update();
     });
+    btn_fi.setOnAction(event -> {
+      rubikCube.Fi();
+      fx_cube.update();
+    });
+
+    btn_b.setOnAction(event -> {
+      rubikCube.B();
+      fx_cube.update();
+    });
+    btn_bi.setOnAction(event -> {
+      rubikCube.Bi();
+      fx_cube.update();
+    });
+    
+    btn_l.setOnAction(event -> {
+      rubikCube.L();
+      fx_cube.update();
+    });
+    btn_li.setOnAction(event -> {
+      rubikCube.Li();
+      fx_cube.update();
+    });
+    
+    btn_r.setOnAction(event -> {
+      rubikCube.R();
+      fx_cube.update();
+    });
+    btn_ri.setOnAction(event -> {
+      rubikCube.Ri();
+      fx_cube.update();
+    });
+    
+    btn_u.setOnAction(event -> {
+      rubikCube.U();
+      fx_cube.update();
+    });
+    btn_ui.setOnAction(event -> {
+      rubikCube.Ui();
+      fx_cube.update();
+    });
+    
+    btn_d.setOnAction(event -> {
+      rubikCube.D();
+      fx_cube.update();
+    });
+    btn_di.setOnAction(event -> {
+      rubikCube.Di();
+      fx_cube.update();
+    });
   }
 
   private static void handleMouse() {
@@ -146,9 +217,9 @@ public class Environment extends Application {
       mouseX = mouse.getSceneX();
       mouseY = mouse.getSceneY();
     });
-    
+
     scene.setOnScroll(scroll -> {
-      camera.setTranslateX(camera.getTranslateX() + 1);
+      camera.setTranslateZ(camera.getTranslateZ() + scroll.getDeltaY());
     });
   }
 
