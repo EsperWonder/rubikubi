@@ -12,8 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
@@ -39,19 +39,28 @@ public class Environment extends Application {
   // OBJECTS //
   /////////////
 
-  // Logic Objects
+  // Private Variables
+  private static double mouseX, mouseY = 0;
+  
+  // Rubik Logic
   static RubikCube rubikCube = new RubikCube();
 
   // 2D Scene Objects
   static Scene scene;
+  static GridPane buttons = new GridPane();
+  
+  static Button btn_shuffle = new Button("Shuffle");
+  
   static Button btn_f = new Button("F");
   static Button btn_fi = new Button("Fi");
   static Button btn_b = new Button("B");
   static Button btn_bi = new Button("Bi");
+  
   static Button btn_l = new Button("L");
   static Button btn_li = new Button("Li");
   static Button btn_r = new Button("R");
   static Button btn_ri = new Button("Ri");
+  
   static Button btn_u = new Button("U");
   static Button btn_ui = new Button("Ui");
   static Button btn_d = new Button("D");
@@ -72,6 +81,7 @@ public class Environment extends Application {
   ///////////////
 
   private static Parent createContent() {
+    // 2D Container
     BorderPane content = new BorderPane();
     content.setPadding(new Insets(8));
     content.setBackground(BG_2D);
@@ -80,28 +90,41 @@ public class Environment extends Application {
     content.setCenter(create3DContent());
 
     // Rotation UI
-    HBox fBox = new HBox(8, btn_f, btn_fi);
-    HBox bBox = new HBox(8, btn_b, btn_bi);
-    HBox lBox = new HBox(8, btn_l, btn_li);
-    HBox rBox = new HBox(8, btn_r, btn_ri);
-    HBox uBox = new HBox(8, btn_u, btn_ui);
-    HBox dBox = new HBox(8, btn_d, btn_di);
+    buttons.add(btn_f, 0, 0);
+    buttons.add(btn_fi, 1, 0);
+    buttons.add(btn_b, 0, 1);
+    buttons.add(btn_bi, 1, 1);
+    
+    buttons.add(btn_l, 0, 2);
+    buttons.add(btn_li, 1, 2);
+    buttons.add(btn_r, 0, 3);
+    buttons.add(btn_ri, 1, 3);
+    
+    buttons.add(btn_u, 0, 4);
+    buttons.add(btn_ui, 1, 4);
+    buttons.add(btn_d, 0, 5);
+    buttons.add(btn_di, 1, 5);
 
-    content.setRight(new VBox(8, fBox, bBox, lBox, rBox, uBox, dBox));
+    content.setRight(buttons);
+    content.setLeft(btn_shuffle);
 
     return content;
   }
 
   private static SubScene create3DContent() {
+    // 3D Container
     HBox content = new HBox();
     content.setAlignment(Pos.CENTER);
 
+    // SubScene
     subscene = new SubScene(content, 500, 500, true, SceneAntialiasing.BALANCED);
 
+    // Rubik's Cube
     fx_cube.setTranslateZ(-200);
     fx_cube.getTransforms().addAll(rx, ry);
     fx_cube.setPickOnBounds(true);
 
+    // Camera
     subscene.setCamera(camera);
 
     content.getChildren().addAll(fx_cube);
@@ -121,7 +144,7 @@ public class Environment extends Application {
     handleButtons();
     handleMouse();
 
-    // Run
+    // Start
     stage.centerOnScreen();
     stage.show();
   }
@@ -130,9 +153,12 @@ public class Environment extends Application {
     launch(args);
   }
 
-  private static double mouseX, mouseY = 0;
-
   private static void handleButtons() {
+    btn_shuffle.setOnAction(event -> {
+      rubikCube.shuffle();
+      fx_cube.update();
+    });
+    
     btn_f.setOnAction(event -> {
       rubikCube.F();
       fx_cube.update();
@@ -200,7 +226,7 @@ public class Environment extends Application {
       double dx = (mouseX - mouse.getSceneX());
       double dy = (mouseY - mouse.getSceneY());
 
-      // Left click turns the camera if not on rubik, while right click always turns the camera
+      // Right-click drag to move the camera
       if (mouse.isSecondaryButtonDown()) {
         rx.setAngle(rx.getAngle() - dy);
         ry.setAngle(ry.getAngle() + dx);
@@ -216,10 +242,6 @@ public class Environment extends Application {
       // Get mouse position
       mouseX = mouse.getSceneX();
       mouseY = mouse.getSceneY();
-    });
-
-    scene.setOnScroll(scroll -> {
-      camera.setTranslateZ(camera.getTranslateZ() + scroll.getDeltaY());
     });
   }
 
