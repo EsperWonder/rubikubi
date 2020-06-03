@@ -6,12 +6,12 @@ import javafx.scene.transform.Translate;
 import logic.Face;
 import logic.RubikCube;
 
-public class FXRubikSide extends Group {
+public class DebugFXRubikSide extends Group {
   
   private static final int BOX_SIZE = 72;
   private static final int BOX_DEPTH = 10;
 
-  public FXRubikSide(Face[] faces) {
+  public DebugFXRubikSide(Face[] faces) {
     Box boxUL = new Box(BOX_SIZE, BOX_SIZE, BOX_DEPTH); // up left
     Box boxUR = new Box(BOX_SIZE, BOX_SIZE, BOX_DEPTH); // up right
     Box boxDL = new Box(BOX_SIZE, BOX_SIZE, BOX_DEPTH); // down left

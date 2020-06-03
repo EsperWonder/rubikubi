@@ -2,10 +2,10 @@ package logic;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/** Data structure for the 2x2x2 Rubik's Cube. */ 
+/** Data structure of a 2x2x2 Rubik's Cube. */
 public class RubikCube {
 
-  /** Number of sides the RubikCube has. */
+  /** Number of sides the cube has. */
   public static final int NB_SIDES = 6;
   /** Number of cells each side has. */
   public static final int NB_CELLS = 4;
@@ -13,6 +13,7 @@ public class RubikCube {
   /** Default number of rotations when shuffling. */
   public static final int NB_SHUFFLES = 25;
 
+  /** Faces of the Rubik's Cube. */
   private Face[][] cells;
 
   public RubikCube() {
@@ -20,6 +21,7 @@ public class RubikCube {
     this.init();
   }
 
+  /** Initializes the cube's faces. */
   public void init() {
     for (int s = 0; s < NB_SIDES; s++) {
       for (int c = 0; c < NB_CELLS; c++) {
@@ -28,18 +30,22 @@ public class RubikCube {
     }
   }
 
+  /** Returns an array of faces. */
   public Face[] getSide(int side) {
     return this.cells[side];
   }
 
+  /** Returns a single face. */
   public Face getFace(int side, int face) {
     return this.getSide(side)[face];
   }
 
+  /** Applies random rotations to the cube. */
   public void shuffle() {
     this.shuffle(NB_SHUFFLES);
   }
 
+  /** Applies a given number of rotations to the cube. */
   public void shuffle(int shuffles) {
     for (int i = 0; i < shuffles; i++) {
 
@@ -380,7 +386,7 @@ public class RubikCube {
     cells[3][3] = cells[0][3];
     cells[0][3] = tmp;
 
-    // Face rotation you absolute dickshit
+    // Face rotation
     tmp = cells[5][1];
     cells[5][1] = cells[5][3];
     cells[5][3] = cells[5][2];

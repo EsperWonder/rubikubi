@@ -13,7 +13,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
@@ -69,7 +69,8 @@ public class Environment extends Application {
   // 3D Scene Objects
   static SubScene subscene;
 
-  static FXRubikCube fx_cube = new FXRubikCube(rubikCube);
+  static DebugFXRubikCube fx_cube = new DebugFXRubikCube(rubikCube);
+  static FXRubikCube fx_cube2 = new FXRubikCube(rubikCube);
 
   static Rotate rx = new Rotate(0, 80, 80, 80, Rotate.X_AXIS);
   static Rotate ry = new Rotate(0, 80, 80, 80, Rotate.Y_AXIS);
@@ -104,7 +105,7 @@ public class Environment extends Application {
     buttons.add(btn_ui, 1, 4);
     buttons.add(btn_d, 0, 5);
     buttons.add(btn_di, 1, 5);
-
+    
     content.setRight(buttons);
     content.setLeft(btn_shuffle);
 
@@ -113,21 +114,29 @@ public class Environment extends Application {
 
   private static SubScene create3DContent() {
     // 3D Container
-    HBox content = new HBox();
+    StackPane content = new StackPane();
     content.setAlignment(Pos.CENTER);
 
     // SubScene
     subscene = new SubScene(content, 500, 500, true, SceneAntialiasing.BALANCED);
-
+    
     // Rubik's Cube
+    fx_cube.setTranslateX(-150);
+    fx_cube.setTranslateY(-150);
     fx_cube.setTranslateZ(-200);
+    fx_cube.setScaleX(0.2);
+    fx_cube.setScaleY(0.2);
+    fx_cube.setScaleZ(0.2);
     fx_cube.getTransforms().addAll(rx, ry);
     fx_cube.setPickOnBounds(true);
+    
+    fx_cube2.setTranslateZ(-200);
+    fx_cube2.getTransforms().addAll(rx, ry);
 
     // Camera
     subscene.setCamera(camera);
 
-    content.getChildren().addAll(fx_cube);
+    content.getChildren().addAll(fx_cube, fx_cube2);
     return subscene;
   }
 
@@ -141,7 +150,7 @@ public class Environment extends Application {
     stage.setScene(scene);
 
     // Event Handling
-    handleButtons();
+    handleRotationButtons();
     handleMouse();
 
     // Start
@@ -153,67 +162,80 @@ public class Environment extends Application {
     launch(args);
   }
 
-  private static void handleButtons() {
+  private static void handleRotationButtons() {
     btn_shuffle.setOnAction(event -> {
       rubikCube.shuffle();
+      fx_cube2.update();
       fx_cube.update();
     });
     
     btn_f.setOnAction(event -> {
       rubikCube.F();
+      fx_cube2.F();
       fx_cube.update();
     });
     btn_fi.setOnAction(event -> {
       rubikCube.Fi();
+      fx_cube2.Fi();
       fx_cube.update();
     });
 
     btn_b.setOnAction(event -> {
       rubikCube.B();
+      fx_cube2.B();
       fx_cube.update();
     });
     btn_bi.setOnAction(event -> {
       rubikCube.Bi();
+      fx_cube2.Bi();
       fx_cube.update();
     });
     
     btn_l.setOnAction(event -> {
       rubikCube.L();
+      fx_cube2.L();
       fx_cube.update();
     });
     btn_li.setOnAction(event -> {
       rubikCube.Li();
+      fx_cube2.Li();
       fx_cube.update();
     });
     
     btn_r.setOnAction(event -> {
       rubikCube.R();
+      fx_cube2.R();
       fx_cube.update();
     });
     btn_ri.setOnAction(event -> {
       rubikCube.Ri();
+      fx_cube2.Ri();
       fx_cube.update();
     });
     
     btn_u.setOnAction(event -> {
       rubikCube.U();
+      fx_cube2.U();
       fx_cube.update();
     });
     btn_ui.setOnAction(event -> {
       rubikCube.Ui();
+      fx_cube2.Ui();
       fx_cube.update();
     });
     
     btn_d.setOnAction(event -> {
       rubikCube.D();
+      fx_cube2.D();
       fx_cube.update();
     });
     btn_di.setOnAction(event -> {
       rubikCube.Di();
+      fx_cube2.Di();
       fx_cube.update();
     });
   }
-
+  
   private static void handleMouse() {
     subscene.setOnMousePressed(mouse -> {
       // Get mouse position
