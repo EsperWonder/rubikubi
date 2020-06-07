@@ -7,8 +7,8 @@ import logic.Face;
 
 public class FXRubikPart extends Group {
   
-  private static final int SIZE = 80;
-  private static final int PIVOT = 40;
+  private static final int SIZE = 72;
+  private static final int PIVOT = 36;
   
   private Rectangle[] faces = new Rectangle[6];
 

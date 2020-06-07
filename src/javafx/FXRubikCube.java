@@ -21,12 +21,14 @@ public class FXRubikCube extends Group {
       this.value = i;
     }
 
-    public int getValue() {
+    private int getValue() {
       return this.value;
     }
   }
 
   private static final Duration ANIM_DURATION = Duration.millis(100);
+  private static final int LO_PIVOT = 4;
+  private static final int HI_PIVOT = 84;
 
   private RubikCube source;
 
@@ -44,23 +46,23 @@ public class FXRubikCube extends Group {
       this.getChildren().add(parts[i]);
     }
 
-    parts[0].getTransforms().add(new Translate(0, 0, 80));
-    parts[1].getTransforms().add(new Translate(80, 0, 80));
-    parts[2].getTransforms().add(new Translate(0, 0, 0));
-    parts[3].getTransforms().add(new Translate(80, 0, 0));
-    parts[4].getTransforms().add(new Translate(0, 80, 80));
-    parts[5].getTransforms().add(new Translate(80, 80, 80));
-    parts[6].getTransforms().add(new Translate(0, 80, 0));
-    parts[7].getTransforms().add(new Translate(80, 80, 0));
+    parts[0].getTransforms().add(new Translate(LO_PIVOT, LO_PIVOT, HI_PIVOT));
+    parts[1].getTransforms().add(new Translate(HI_PIVOT, LO_PIVOT, HI_PIVOT));
+    parts[2].getTransforms().add(new Translate(LO_PIVOT, LO_PIVOT, LO_PIVOT));
+    parts[3].getTransforms().add(new Translate(HI_PIVOT, LO_PIVOT, LO_PIVOT));
+    parts[4].getTransforms().add(new Translate(LO_PIVOT, HI_PIVOT, HI_PIVOT));
+    parts[5].getTransforms().add(new Translate(HI_PIVOT, HI_PIVOT, HI_PIVOT));
+    parts[6].getTransforms().add(new Translate(LO_PIVOT, HI_PIVOT, LO_PIVOT));
+    parts[7].getTransforms().add(new Translate(HI_PIVOT, HI_PIVOT, LO_PIVOT));
 
-    setTransforms(parts[0], 80, 80, 0);
-    setTransforms(parts[1], 0, 80, 0);
-    setTransforms(parts[2], 80, 80, 80);
-    setTransforms(parts[3], 0, 80, 80);
-    setTransforms(parts[4], 80, 0, 0);
-    setTransforms(parts[5], 0, 0, 0);
-    setTransforms(parts[6], 80, 0, 80);
-    setTransforms(parts[7], 0, 0, 80);
+    setTransforms(parts[0], HI_PIVOT, HI_PIVOT, LO_PIVOT);
+    setTransforms(parts[1], LO_PIVOT, HI_PIVOT, LO_PIVOT);
+    setTransforms(parts[2], HI_PIVOT, HI_PIVOT, HI_PIVOT);
+    setTransforms(parts[3], LO_PIVOT, HI_PIVOT, HI_PIVOT);
+    setTransforms(parts[4], HI_PIVOT, LO_PIVOT, LO_PIVOT);
+    setTransforms(parts[5], LO_PIVOT, LO_PIVOT, LO_PIVOT);
+    setTransforms(parts[6], HI_PIVOT, LO_PIVOT, HI_PIVOT);
+    setTransforms(parts[7], LO_PIVOT, LO_PIVOT, HI_PIVOT);
     
     update();
   }

@@ -13,7 +13,7 @@ public class RubikCube {
   /** Default number of rotations when shuffling. */
   public static final int NB_SHUFFLES = 25;
 
-  /** Faces of the Rubik's Cube. */
+  /** Faces of the cube. */
   private Face[][] cells;
 
   public RubikCube() {
@@ -37,7 +37,18 @@ public class RubikCube {
 
   /** Returns a single face. */
   public Face getFace(int side, int face) {
-    return this.getSide(side)[face];
+    return this.cells[side][face];
+  }
+  
+  /** Returns whether the cube is in a solved state. */
+  public boolean isSolved() {
+    boolean isSolved = true;
+    
+    for (int s = 0; s < NB_SIDES && isSolved; s++) {
+      isSolved = (cells[s][0] == cells[s][1]) && (cells[s][1] == cells[s][2]) && (cells[s][2] == cells[s][3]);
+    }
+    
+    return isSolved;
   }
 
   /** Applies random rotations to the cube. */
